@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Rbq_Elastic>
+			<version>0.1.0</version>
+		</Rbq_Elastic>
+	</modules>
+	<global>
+		<helpers>
+			<elastic>
+				<class>Rbq_Elastic_Helper</class>
+			</elastic>
+			<!-- Rewrites the CatalogSearch Helper
+			<catalogsearch>
+				<rewrite>
+					<data>Rbq_Elastic_Helper_Data</data>
+				</rewrite>
+			</catalogsearch>-->
+		</helpers>
+		<models>
+			<elastic>
+				<class>Rbq_Elastic_Model</class>
+				<resourceModel>elastic_mysql4</resourceModel>
+			</elastic>
+		</models>
+		<blocks>
+			<elastic>
+				<class>Rbq_Elastic_Block</class>
+			</elastic>
+		</blocks>
+		<!-- Custom Indexer implemented to build the product indexes in ES -->
+		<index>
+			<indexer>
+				<elastic_products_short>
+					<model>elastic/indexer_products_short</model>
+				</elastic_products_short >
+			</indexer>
+		</index>
+		<events>
+			<!-- Product edit and save event captured -->
+			<catalog_product_save_after>
+				<observers>
+					<elastic_observer>
+						<type>singleton</type>
+						<class>elastic/observer</class>
+						<method>productSave</method>
+					</elastic_observer>
+				</observers>
+			</catalog_product_save_after>
+			<!-- Product delete event captured -->
+			<catalog_product_delete_after>
+				<observers>
+					<elastic_observer>
+						<type>singleton</type>
+						<class>elastic/observer</class>
+						<method>productDelete</method>
+					</elastic_observer>
+				</observers>
+			</catalog_product_delete_after>
+		</events>
+	</global>
+	<frontend>
+		<routers>
+			<elastic>
+				<use>standard</use>
+				<args>
+					<module>Rbq_Elastic</module>
+					<frontName>elastic</frontName>
+				</args>
+			</elastic>
+		</routers>
+		<layout>
+			<updates>
+				<elastic>
+					<file>elastic.xml</file>
+				</elastic>
+			</updates>
+		</layout>
+	</frontend>
+</config>

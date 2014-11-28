@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Rbq_Topmenu>
+            <version>0.1.0</version>
+        </Rbq_Topmenu>
+    </modules>
+    <global>
+        <blocks>
+            <page>
+                <rewrite>
+                    <html_topmenu>Rbq_Topmenu_Block_Html_Topmenu</html_topmenu>
+                </rewrite>
+            </page>
+        </blocks>
+        <models>
+            <catalog>
+                <rewrite>
+                    <observer>Rbq_Topmenu_Model_Catalog_Observer</observer>
+                </rewrite>
+            </catalog>
+        </models>
+        <helpers>
+            <rbq_topmenu>
+                <class>Rbq_Topmenu_Helper</class>
+            </rbq_topmenu>
+        </helpers>
+    </global>
+</config>

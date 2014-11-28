@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Rbq_Topmenu>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Rbq_Topmenu>
+    </modules>
+</config>
