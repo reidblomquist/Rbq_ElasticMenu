@@ -101,7 +101,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                                 ->addAttributeToFilter('visibility', array('in' => $this->_visibilityAccepted));
                         foreach ($_productCollection as $_product) {
                                 $productData = $this->_buildProductData($_product);
-                                $productDocument = new Elastica_Document($productId, $productData);
+                                $productDocument = new Elastica_Document($productData['product_id'], $productData);
                                 $elasticaType->addDocument($productDocument);
                         }
                         // Remove documents of disabled products
@@ -186,9 +186,8 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
         }
 
         private function _buildProductData($_product) {
-                $productId = $_product->getId();
                 $productArray = array(
-                    'product_id' => $productId,
+                    'product_id' => $_product->getId(),
                     'category_id' => $_product->getCategoryIds(),
                     'name' => $_product->getName(),
                     'description' => $_product->getDescription(),
