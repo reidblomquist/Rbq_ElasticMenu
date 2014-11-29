@@ -100,16 +100,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                                 ->addAttributeToFilter('status', 1)
                                 ->addAttributeToFilter('visibility', array('in' => $this->_visibilityAccepted));
                         foreach ($_productCollection as $_product) {
-                                $productId = $_product->getId();
-                                $productData = array(
-                                        'product_id' => $productId,
-                                        'category_id' => $_product->getCategoryIds(),
-                                        'name' => $_product->getName(),
-                                        'description' => $_product->getDescription(),
-                                        'short_description' => $_product->getShortDescription(),
-                                        'url' => $_product->getProductUrl(),
-                                        '_boost' => 1.0
-                                );
+                                $productData = $this->_buildProductData($_product);
                                 $productDocument = new Elastica_Document($productId, $productData);
                                 $elasticaType->addDocument($productDocument);
                         }
@@ -173,16 +164,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         $elasticaType = $elasticaIndex->getType($this->_productType);
                         $_product = Mage::getModel('catalog/product')->load($productId);
                         if ($_product->getStatus() == 1 AND in_array($_product->getVisibility(), $this->_visibilityAccepted)) {
-                                $productId = $_product->getId();
-                                $productData = array(
-                                        'product_id' => $productId,
-                                        'category_id' => $_product->getCategoryIds(),
-                                        'name' => $_product->getName(),
-                                        'description' => $_product->getDescription(),
-                                        'short_description' => $_product->getShortDescription(),
-                                        'url' => $_product->getProductUrl(),
-                                        '_boost' => 1.0
-                                );
+                                $productData = $this->_buildProductData($_product);
                                 $productDocument = new Elastica_Document($productId, $productData);
                                 $elasticaType->addDocument($productDocument);
                         } else {
@@ -201,6 +183,20 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         return false;
                 }
                 return true;
+        }
+
+        private function _buildProductData($_product) {
+                $productId = $_product->getId();
+                $productArray = array(
+                    'product_id' => $productId,
+                    'category_id' => $_product->getCategoryIds(),
+                    'name' => $_product->getName(),
+                    'description' => $_product->getDescription(),
+                    'short_description' => $_product->getShortDescription(),
+                    'url' => $_product->getProductUrl(),
+                    '_boost' => 1.0
+                );
+                return $productArray;
         }
 
         /*
