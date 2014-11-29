@@ -15,3 +15,5 @@ TODO:
 3. Fix search and autosuggest
 4. Add a layered nav ajax <-> elasticsearch extension for freaky fast filtering
 5. Play with building additional indexes within elasticsearch
+6. Make composer installable
+6. Add Elastica as a composer submodule
