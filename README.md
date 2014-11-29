@@ -1,4 +1,4 @@
-# Elastic TopMenu
+# Elastic TopMenu [![Code Climate](https://codeclimate.com/repos/547949c5695680318e0445f7/badges/384a735b00a00cea7cf5/gpa.svg)](https://codeclimate.com/repos/547949c5695680318e0445f7/feed)
 
 *WIP*
 
