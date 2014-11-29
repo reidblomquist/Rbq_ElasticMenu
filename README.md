@@ -11,9 +11,8 @@ Adheres to Elastica's default of 10 result max - if totalHits > 10 adds a "See m
 TODO:
 
 1. Give categories option to enable/disable products in nav
-2. Fix index auto update action
-3. Fix search and autosuggest
-4. Add a layered nav ajax <-> elasticsearch extension for freaky fast filtering
-5. Play with building additional indexes within elasticsearch
-6. Make composer installable
+2. Fix search and autosuggest
+3. Add a layered nav ajax <-> elasticsearch extension for freaky fast filtering
+4. Play with building additional indexes within elasticsearch
+5. Make composer installable
 6. Add Elastica as a composer submodule
