@@ -52,7 +52,7 @@ class Rbq_Topmenu_Model_Catalog_Observer extends Mage_Catalog_Model_Observer
                     );
                     $addNode = new Varien_Data_Tree_Node($addData, $tree, $categoryNode);
                     $categoryNode->addChild($addNode);
-              }
+                }
             }
             if (Mage::helper('catalog/category_flat')->isEnabled()) {
                 $subcategories = (array)$category->getChildrenNodes();
