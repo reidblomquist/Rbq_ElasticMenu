@@ -37,7 +37,6 @@ class Rbq_Topmenu_Model_Catalog_Observer extends Mage_Catalog_Model_Observer
                         'name' => $rawProduct['name'],
                         'id' => $rawProduct['product_id'],
                         'url' => $rawProduct['url'],
-                        'product_count' => 0,
                         'is_active' => 1,
                         'is_category' => true
                     );
