@@ -4,7 +4,7 @@
 
 This Magento extension uses elasticsearch as a condensed product information index allowing for speedy tree building
 
-Simply extract to your magento base dir and build you elasticsearch product info index via adminhtml > system > index management
+Simply extract to your magento base dir and build your elasticsearch product info index via adminhtml > system > index management
 
 Adheres to Elastica's default of 10 result max - if totalHits > 10 adds a "See more..." item to category's child tree that links to said category.
 
