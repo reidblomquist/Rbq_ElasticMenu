@@ -100,11 +100,10 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                                 ->addAttributeToFilter('status', 1)
                                 ->addAttributeToFilter('visibility', array('in' => $this->_visibilityAccepted));
                         foreach ($_productCollection as $_product) {
-                                $productCategories = $_product->getCategoryIds();
                                 $productId = $_product->getId();
                                 $productData = array(
-                                        'product_id' => $_product->getId(),
-                                        'category_id' => $productCategories,
+                                        'product_id' => $productId,
+                                        'category_id' => $_product->getCategoryIds(),
                                         'name' => $_product->getName(),
                                         'description' => $_product->getDescription(),
                                         'short_description' => $_product->getShortDescription(),
@@ -174,18 +173,16 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         $elasticaType = $elasticaIndex->getType($this->_productType);
                         $_product = Mage::getModel('catalog/product')->load($productId);
                         if ($_product->getStatus() == 1 AND in_array($_product->getVisibility(), $this->_visibilityAccepted)) {
-                                $productCategories = $_product->getCategoryIds();
-                                foreach ($productCategories as $productCategory) {
-                                        $productData = array(
-                                                'product_id' => $productId,
-                                                'category_id' => $productCategory,
-                                                'name' => $_product->getName(),
-                                                'description' => $_product->getDescription(),
-                                                'short_description' => $_product->getShortDescription(),
-                                                'url' => $_product->getProductUrl(),
-                                                '_boost' => 1.0
-                                        );
-                                }
+                                $productId = $_product->getId();
+                                $productData = array(
+                                        'product_id' => $productId,
+                                        'category_id' => $_product->getCategoryIds(),
+                                        'name' => $_product->getName(),
+                                        'description' => $_product->getDescription(),
+                                        'short_description' => $_product->getShortDescription(),
+                                        'url' => $_product->getProductUrl(),
+                                        '_boost' => 1.0
+                                );
                                 $productDocument = new Elastica_Document($productId, $productData);
                                 $elasticaType->addDocument($productDocument);
                         } else {
