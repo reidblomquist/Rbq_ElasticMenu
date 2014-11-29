@@ -43,16 +43,16 @@ class Rbq_Topmenu_Model_Catalog_Observer extends Mage_Catalog_Model_Observer
                     $productNode = new Varien_Data_Tree_Node($productData, 'id', $tree, $categoryNode);
                     $categoryNode->addChild($productNode);
                 }
-            }
-            if ($rawProducts && $rawProducts->getTotalHits() > 10) {
-                $addData = array(
-                    'name' => 'See more...',
-                    'url' => $categoryUrl,
-                    'is_active' => 1,
-                    'is_category' => true
-                );
-                $addNode = new Varien_Data_Tree_Node($addData, $tree, $categoryNode);
-                $categoryNode->addChild($addNode);
+                if ($rawProducts->getTotalHits() > 10) {
+                    $addData = array(
+                        'name' => 'See more...',
+                        'url' => $categoryUrl,
+                        'is_active' => 1,
+                        'is_category' => true
+                    );
+                    $addNode = new Varien_Data_Tree_Node($addData, $tree, $categoryNode);
+                    $categoryNode->addChild($addNode);
+              }
             }
             if (Mage::helper('catalog/category_flat')->isEnabled()) {
                 $subcategories = (array)$category->getChildrenNodes();
