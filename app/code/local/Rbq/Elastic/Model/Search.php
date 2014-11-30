@@ -138,7 +138,6 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         $elasticaType->getIndex()->refresh();
                         return true;
                 } catch (Exception $e) {
-//			echo "<pre>"; print_r($e);
                         Mage::log('Elastic Exception while indexing: ' . $e);
                         return false;
                 }
