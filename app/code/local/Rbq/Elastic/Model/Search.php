@@ -22,6 +22,38 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
         private $_autoImageSize = 80;
         private $_visibilityAccepted = array(3, 4);
         private $_visibilityRejected = array(1, 2);
+        // Prebuilt Elastica arrays
+        private $_elasticaIndexArray = array(
+            'number_of_shards' => 4,
+            'number_of_replicas' => 1,
+            'analysis' => array(
+                'analyzer' => array(
+                    'indexAnalyzer' => array(
+                        'type' => 'custom',
+                        'tokenizer' => 'standard',
+                        'filter' => array('lowercase', 'mySnowball'),
+                        'char_filter' => array('myMapping')
+                    ),
+                    'searchAnalyzer' => array(
+                        'type' => 'custom',
+                        'tokenizer' => 'standard',
+                        'filter' => array('lowercase', 'mySnowball')
+                    )
+                ),
+                'char_filter' => array(
+                    'myMapping' => array(
+                        'type' => 'mapping',
+                        'mappings' => array('-=>')
+                    )
+                ),
+                'filter' => array(
+                    'mySnowball' => array(
+                        'type' => 'snowball',
+                        'language' => 'English'
+                    )
+                )
+            )
+        );
 
         /*
          *
@@ -38,40 +70,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         $elasticaIndex = $elasticaClient->getIndex('products');
                         // Create index
                         if (!$elasticaIndex->exists()) {
-                                $elasticaIndex->create(
-                                        array(
-                                                'number_of_shards' => 4,
-                                                'number_of_replicas' => 1,
-                                                'analysis' => array(
-                                                        'analyzer' => array(
-                                                                'indexAnalyzer' => array(
-                                                                        'type' => 'custom',
-                                                                        'tokenizer' => 'standard',
-                                                                        'filter' => array('lowercase', 'mySnowball'),
-                                                                        'char_filter' => array('myMapping')
-                                                                ),
-                                                                'searchAnalyzer' => array(
-                                                                        'type' => 'custom',
-                                                                        'tokenizer' => 'standard',
-                                                                        'filter' => array('lowercase', 'mySnowball')
-                                                                )
-                                                        ),
-                                                        'char_filter' => array(
-                                                                'myMapping' => array(
-                                                                        'type' => 'mapping',
-                                                                        'mappings' => array('-=>')
-                                                                )
-                                                        ),
-                                                        'filter' => array(
-                                                                'mySnowball' => array(
-                                                                        'type' => 'snowball',
-                                                                        'language' => 'English'
-                                                                )
-                                                        )
-                                                )
-                                        ),
-                                        true
-                                );
+                                $elasticaIndex->create( $this->_elasticaIndexArray, true );
                         }
                         // Get type
                         $elasticaType = $elasticaIndex->getType('short');
@@ -257,33 +256,33 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                 }
                 if ($this->_totalCount == 0) {
                         $queryJsonFormat = '{
-                                        "query": {
-                                        "multi_match": {
-                                        "query": "' . $queryText . '",
-                                        "fields": [
-                            "name"
-                        ],
-                        "operator": "and"
-                    }
-                },
-                "suggest": {
-                    "text": "' . $queryText . '",
-                    "film": {
-                        "phrase": {
-                            "analyzer": "searchAnalyzer",
-                            "field": "name",
-                            "size": 6,
-                            "real_word_error_likelihood": 0.9,
-                            "max_errors": 0.5,
-                            "gram_size": 2
-                        }
-                    }
-                },
-                "from": 0,
-                "size": 1,
-                "sort": [],
-                "facets": []
-            }';
+                                "query": {
+                                "multi_match": {
+                                "query": "' . $queryText . '",
+                                "fields": [
+                                    "name"
+                                ],
+                                    "operator": "and"
+                                }
+                                },
+                                "suggest": {
+                                    "text": "' . $queryText . '",
+                                    "film": {
+                                        "phrase": {
+                                            "analyzer": "searchAnalyzer",
+                                            "field": "name",
+                                            "size": 6,
+                                            "real_word_error_likelihood": 0.9,
+                                            "max_errors": 0.5,
+                                            "gram_size": 2
+                                        }
+                                    }
+                                },
+                                "from": 0,
+                                "size": 1,
+                                "sort": [],
+                                "facets": []
+                        }';
                         $queryBuilder = new Elastica_Query_Builder($queryJsonFormat);
                         $elasticaQuery = new Elastica_Query($queryBuilder->toArray());
                         $elasticaClient = new Elastica_Client();
