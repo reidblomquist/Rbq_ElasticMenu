@@ -9,7 +9,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
         const RESULT_TYPE_FAILED = 'no_results';
         private $_searchResponse = array();
         private $_searchResponseType = self::RESULT_TYPE_PRODUCTS;
-        private $_searchResponseSuggestion = '';
+        private $_searchSuggestion = '';
         private $_totalCount = 0;
         // Default parameters
         private $_productIndex = 'products';
@@ -17,9 +17,9 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
         private $_primaryField = 'product_id';
         private $_secondaryField = 'short_description';
         private $_tertiaryFiled = 'description';
-        private $_autosuggestSearchLimit = 10;
-        private $_searchPageProductLimit = 99;
-        private $_autosuggestImageSize = 80;
+        private $_autoSearchLimit = 10;
+        private $_searchPageLimit = 99;
+        private $_autoImageSize = 80;
         private $_visibilityAccepted = array(3, 4);
         private $_visibilityRejected = array(1, 2);
 
@@ -236,7 +236,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
          * Returns array of ES results
          *
          */
-        public function fetchAutoSuggestResults($query, $searchType = self::BASIC_RESULTS)
+        public function fetchAutoResults($query, $searchType = self::BASIC_RESULTS)
         {
                 if (!$query) {
                         return false;
@@ -246,15 +246,15 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         $this->search($this->_productIndex, $this->_productType, $queryText);
                 } elseif ($searchType == self::ADVANCED_RESULTS) {
                         $this->search($this->_productIndex, $this->_productType, $queryText, array($this->_primaryField));
-                        if ($this->_totalCount < $this->_autosuggestSearchLimit) {
-                                $this->search($this->_productIndex, $this->_productType, $queryText, array($this->_secondaryField), $this->_autosuggestSearchLimit - $this->_totalCount);
-                                if ($this->_totalCount < $this->_autosuggestSearchLimit) {
-                                        $this->search($this->_productIndex, $this->_productType, $queryText, array($this->_tertiaryFiled), $this->_autosuggestSearchLimit - $this->_totalCount);
+                        if ($this->_totalCount < $this->_autoSearchLimit) {
+                                $this->search($this->_productIndex, $this->_productType, $queryText, array($this->_secondaryField), $this->_autoSearchLimit - $this->_totalCount);
+                                if ($this->_totalCount < $this->_autoSearchLimit) {
+                                        $this->search($this->_productIndex, $this->_productType, $queryText, array($this->_tertiaryFiled), $this->_autoSearchLimit - $this->_totalCount);
                                 }
                         }
                 }
-                if ($this->_totalCount < $this->_autosuggestSearchLimit) {
-                        $this->search($this->_productIndex, $this->_productType, $queryText . '*', array($this->_primaryField), $this->_autosuggestSearchLimit - $this->_totalCount);
+                if ($this->_totalCount < $this->_autoSearchLimit) {
+                        $this->search($this->_productIndex, $this->_productType, $queryText . '*', array($this->_primaryField), $this->_autoSearchLimit - $this->_totalCount);
                 }
                 if ($this->_totalCount == 0) {
                         $queryJsonFormat = '{
@@ -298,12 +298,12 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         if (count($phraseSuggestions) > 0) {
                                 $closestMatch = $phraseSuggestions[0]['text'];
                                 $this->_searchResponseType = self::RESULT_TYPE_SUGGESTION;
-                                $this->_searchResponseSuggestion = $closestMatch;
+                                $this->_searchSuggestion = $closestMatch;
                         } else {
                                 $this->_searchResponseType = self::RESULT_TYPE_FAILED;
                         }
                 }
-                return array($this->_searchResponse, $this->_searchResponseType, $this->_searchResponseSuggestion);
+                return array($this->_searchResponse, $this->_searchResponseType, $this->_searchSuggestion);
         }
 
         /*
@@ -334,7 +334,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
          * $type            => ES type. Defaults to $_productType
          * $queryText => Search term entered
          * $fields        => Fields to perform search in. Defaults to 'all'
-         * $size            => Size of search results to fetch. Defaults to $_autosuggestSearchLimit
+         * $size            => Size of search results to fetch. Defaults to $_autoSearchLimit
          * $from            => Used for pagination. Defines the index from which to fetch results. Defaults to 0
          *
          * Sets the result and result count parameters
@@ -354,7 +354,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                 $elasticaQueryString = new Elastica_Query_QueryString();
                 $elasticaQueryString->setQuery((string)$queryText)->setFields($fields);
                 if (!$size) {
-                        $size = $this->_autosuggestSearchLimit;
+                        $size = $this->_autoSearchLimit;
                 }
                 // Create the actual search object with some data.
                 $elasticaQuery = new Elastica_Query();
