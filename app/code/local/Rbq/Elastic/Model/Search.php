@@ -54,6 +54,15 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                 )
             )
         );
+        private $_elasticaMapArray = array(
+                'product_id' => array('type' => 'integer', 'include_in_all' => FALSE),
+                'category_id' => array('type' => 'string', 'include_in_all' => FALSE),
+                'name' => array('type' => 'string', 'include_in_all' => TRUE),
+                'description' => array('type' => 'string', 'include_in_all' => TRUE),
+                'short_description' => array('type' => 'string', 'include_in_all' => TRUE),
+                'url' => array('type' => 'string', 'include_in_all' => FALSE),
+                '_boost' => array('type' => 'float', 'include_in_all' => FALSE)
+            );
 
         /*
          *
@@ -82,15 +91,7 @@ class Rbq_Elastic_Model_Search extends Mage_Core_Model_Abstract
                         // Define boost field
                         $mapping->setParam('_boost', array('name' => '_boost', 'null_value' => 1.0));
                         // Set mapping
-                        $mapping->setProperties(array(
-                                'product_id' => array('type' => 'integer', 'include_in_all' => FALSE),
-                                'category_id' => array('type' => 'string', 'include_in_all' => FALSE),
-                                'name' => array('type' => 'string', 'include_in_all' => TRUE),
-                                'description' => array('type' => 'string', 'include_in_all' => TRUE),
-                                'short_description' => array('type' => 'string', 'include_in_all' => TRUE),
-                                'url' => array('type' => 'string', 'include_in_all' => FALSE),
-                                '_boost' => array('type' => 'float', 'include_in_all' => FALSE)
-                        ));
+                        $mapping->setProperties($this->_elasticaMapArray);
                         // Send mapping to type
                         $mapping->send();
                         // Add products to documents
